@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "ebitda-chart-app"
+    }
+  },
+  "defaultProject": "ebitda-chart-app",
+  "cli": {
+    "analytics": "55650021-4401-4ce4-8a3e-bdda28eb0f04"
+  }
 }
