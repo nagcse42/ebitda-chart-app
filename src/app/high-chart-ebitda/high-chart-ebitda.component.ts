@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
+import { editdaData } from '../analyse-data/editda_data';
+
 
 declare var require: any;
 let Boost = require('highcharts/modules/boost');
@@ -17,6 +19,14 @@ noData(Highcharts);
   styleUrls: ['./high-chart-ebitda.component.css']
 })
 export class HighChartEbitdaComponent implements OnInit {
+  fromDate: any = {
+    value: new Date()
+  };
+  toDate: any = {
+    value: new Date()
+  };
+
+  MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   chartData: any = {
     chart: {
@@ -108,7 +118,7 @@ export class HighChartEbitdaComponent implements OnInit {
       categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       gridLineWidth: 0
     }, {
-      categories: ['n1', 'n2', 'n3', 'e1', 'e2', 'e3', 'w1', 'w2', 'w3', 's1', 's2', 's3'],
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       opposite: true,
       labels: {
         enabled: false
@@ -119,26 +129,26 @@ export class HighChartEbitdaComponent implements OnInit {
         gridLineWidth: 0,
         labels: {
           style: {
-            color: '#89A54E'
+            color: 'black'
           }
         },
         title: {
           text: 'Budget',
           style: {
-            color: '#89A54E'
+            color: 'black'
           }
         }
       },
       { // Secondary yAxis
         title: {
-          text: 'Actual %',
+          text: 'Actual',
           style: {
             color: Highcharts.getOptions().colors[3]
           }
         },
         labels: {
           style: {
-            color: '#4572A7'
+            color: 'black'
           }
         },
         opposite: true
@@ -168,18 +178,18 @@ export class HighChartEbitdaComponent implements OnInit {
       // Yearly Data
       {
         type: 'column',
-        name: '2021 Actual',
+        name: '2020 Actual',
         data: [10000, 25000, 5000, 1200, 89000, 12345, 10000, 25000, 5000, 1200, 89000, 12345],
         color: '#212954'
       }, {
         type: 'column',
-        name: '2020 Actual',
+        name: '2019 Actual',
         data: [10111, 25111, 5111, 1311, 89111, 12456, 10111, 25111, 5111, 1311, 89111, 12456],
         color: '#8592d4'
       },
       {
         type: 'column',
-        name: '2021 Budget',
+        name: '2020 Budget',
         data: [8889, 23889, 3889, 89, 87889, 11234, 8889, 23889, 3889, 89, 87889, 11234],
         color: 'pink'
       },
@@ -187,16 +197,10 @@ export class HighChartEbitdaComponent implements OnInit {
       // Line Chart
       {
         type: 'spline',
-        name: 'Actual %',
+        name: 'YTD 2020',
         yAxis: 1,
         xAxis: 1,
         data: [20, 30, 40, 35, 45, 55, 45, 35, 50, 33, 42, 55],
-        /* Profit % for Black, BW Print and Fashion
-        For North, ->   20, 30, 40 % 
-        For East ->     35, 45, 55% 
-        For West ->     45, 35, 50% 
-        Four South ->   33, 42, 55% 
-        */
         color: '#212954',
         marker: {
           lineWidth: 1,
@@ -206,21 +210,28 @@ export class HighChartEbitdaComponent implements OnInit {
       },
       {
         type: 'spline',
-        name: 'Budget %',
+        name: 'YTD 2019',
         yAxis: 1,
         xAxis: 1,
         data: [22, 40, 50, 35, 85, 15, 35, 35, 40, 33, 42, 55],
-        /* Profit % for Black, BW Print and Fashion
-        For North, ->   20, 30, 40 % 
-        For East ->     35, 45, 55% 
-        For West ->     45, 35, 50% 
-        Four South ->   33, 42, 55% 
-        */
         color: '#8592d4',
         marker: {
           lineWidth: 1,
           lineColor: '#8592d4',
           fillColor: '#8592d4'
+        }
+      },
+      {
+        type: 'spline',
+        name: 'YTD Budget',
+        yAxis: 1,
+        xAxis: 1,
+        data: [60, 70, 80, 90, 100, 105, 115, 125, 130, 135, 145, 155],
+        color: 'pink',
+        marker: {
+          lineWidth: 1,
+          lineColor: 'pink',
+          fillColor: 'pink'
         }
       }
     ]
@@ -230,7 +241,129 @@ export class HighChartEbitdaComponent implements OnInit {
 
   ngOnInit(): void {
     //Highcharts.chart('container', this.chartData);
+    if (editdaData && editdaData.length > 0) {
+      this.processData();
+    }
     Highcharts.chart('container', this.mutliChartData);
   }
 
+  processData() {
+    let seriesData: any = [
+      // Yearly Data
+      {
+        type: 'column',
+        name: '2020 Actual',
+        data: [],
+        color: '#212954'
+      },
+      {
+        type: 'column',
+        name: '2019 Actual',
+        data: [],
+        color: '#8592d4'
+      },
+      {
+        type: 'column',
+        name: '2020 Budget',
+        data: [],
+        color: 'pink'
+      },
+      // Line Chart
+      {
+        type: 'spline',
+        name: 'YTD 2020',
+        yAxis: 1,
+        xAxis: 1,
+        data: [],
+        color: '#212954',
+        marker: {
+          lineWidth: 1,
+          lineColor: '#212954',
+          fillColor: '#212954'
+        }
+      },
+      {
+        type: 'spline',
+        name: 'YTD 2019',
+        yAxis: 1,
+        xAxis: 1,
+        data: [],
+        color: '#8592d4',
+        marker: {
+          lineWidth: 1,
+          lineColor: '#8592d4',
+          fillColor: '#8592d4'
+        }
+      },
+      {
+        type: 'spline',
+        name: 'YTD Budget',
+        yAxis: 1,
+        xAxis: 1,
+        data: [],
+        color: 'pink',
+        marker: {
+          lineWidth: 1,
+          lineColor: 'pink',
+          fillColor: 'pink'
+        }
+      }
+    ];
+
+    for (let data of editdaData) {
+      for (let index = 0; index < seriesData.length; index++) {
+        let seriesDataItem = seriesData[index];
+        let monthIndex = this.MONTHS.indexOf(data.MONTH);
+        switch (seriesDataItem.name) {
+          case 'YTD Budget':
+            if (seriesDataItem.data && !!seriesDataItem.data[monthIndex]) {
+              seriesDataItem.data[monthIndex] = seriesDataItem.data[monthIndex] + data.YTDbudget;
+            } else {
+              seriesDataItem.data.push(data.YTDbudget);
+            }
+            break;
+          case 'YTD 2019':
+            if (seriesDataItem.data && !!seriesDataItem.data[monthIndex]) {
+              seriesDataItem.data[monthIndex] = seriesDataItem.data[monthIndex] + data.py_ytd_actual;
+            } else {
+              seriesDataItem.data.push(data.py_ytd_actual);
+            }
+            break;
+          case 'YTD 2020':
+            if (seriesDataItem.data && !!seriesDataItem.data[monthIndex]) {
+              seriesDataItem.data[monthIndex] = seriesDataItem.data[monthIndex] + data.YTDactual;
+            } else {
+              seriesDataItem.data.push(data.YTDactual);
+            }
+            break;
+          case '2020 Budget':
+            if (seriesDataItem.data && !!seriesDataItem.data[monthIndex]) {
+              seriesDataItem.data[monthIndex] = seriesDataItem.data[monthIndex] + data.MTDbudget;
+            } else {
+              seriesDataItem.data.push(data.MTDbudget);
+            }
+            break;
+          case '2020 Actual':
+            if (seriesDataItem.data && !!seriesDataItem.data[monthIndex]) {
+              seriesDataItem.data[monthIndex] = seriesDataItem.data[monthIndex] + data.MTDactual;
+            } else {
+              seriesDataItem.data.push(data.MTDactual);
+            }
+            break;
+          case '2019 Actual':
+            if (seriesDataItem.data && !!seriesDataItem.data[monthIndex]) {
+              seriesDataItem.data[monthIndex] = seriesDataItem.data[monthIndex] + data.py_mtd_actual;
+            } else {
+              seriesDataItem.data.push(data.py_mtd_actual);
+            }
+            break;
+          default: break;
+        }
+        seriesData[index] = seriesDataItem;
+      }
+    }
+
+    console.log("Series Data : " + seriesData);
+    this.mutliChartData.series = seriesData;
+  }
 }
