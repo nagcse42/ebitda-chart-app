@@ -3,6 +3,11 @@
   text-align: center;
 }
 
+.container {
+  align-items: center;
+  text-align: center;
+}
+
 .selection {
   min-width: 8rem;
   font-weight: bold;
@@ -17,7 +22,7 @@
 }
 
 .selections-div {
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem;
   font-size: 1.2rem;
   font-weight: bold;
 }

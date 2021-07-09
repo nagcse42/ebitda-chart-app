@@ -22,8 +22,14 @@ export class HighChartEbitdaComponent implements OnInit {
   fromPeriods: any = [];
   toPeriods: any = [];
   years: any = [];
+  startMnthIndex = 0;
+  endMnthIndex = 11;
+  fromMonth: string = "January";
+  toMonth: string = "December";
+  userInfo: string = '';
 
   MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   chartData: any = {
     chart: {
@@ -112,10 +118,10 @@ export class HighChartEbitdaComponent implements OnInit {
       }
     },
     xAxis: [{
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      categories: this.SHORT_MONTHS,
       gridLineWidth: 0
     }, {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      categories: this.SHORT_MONTHS,
       opposite: true,
       labels: {
         enabled: false
@@ -244,7 +250,6 @@ export class HighChartEbitdaComponent implements OnInit {
     if (editdaData && editdaData.length > 0) {
       this.processData();
     }
-    Highcharts.chart('container', this.mutliChartData);
   }
 
   processData() {
@@ -366,18 +371,60 @@ export class HighChartEbitdaComponent implements OnInit {
     }
 
     console.log("Series Data : " + seriesData);
+    if (this.startMnthIndex != 0 || this.endMnthIndex != 11) {
+      seriesData = this.getFilteredSeries(seriesData);
+      this.mutliChartData.xAxis[0].categories = this.SHORT_MONTHS.slice(this.startMnthIndex, this.endMnthIndex + 1);
+      this.mutliChartData.xAxis[1].categories = this.SHORT_MONTHS.slice(this.startMnthIndex, this.endMnthIndex + 1);
+    }
+
     this.mutliChartData.series = seriesData;
+    Highcharts.chart('container', this.mutliChartData);
   }
 
-  fromPeriodChange(value: any) {
-    console.log("Option Value" + value);
+  getFilteredSeries(seriesData: any) {
+    if (seriesData && seriesData.length > 0) {
+      for (let seriesIndx = 0; seriesIndx < seriesData.length; seriesIndx++) {
+        let seriesDataItem = seriesData[seriesIndx];
+        if (seriesDataItem.data && seriesDataItem.data.length > 0) {
+          seriesDataItem.data = seriesDataItem.data.slice(this.startMnthIndex, this.endMnthIndex + 1);
+          seriesData[seriesIndx] = seriesDataItem;
+        }
+      }
+    }
+
+    return seriesData;
   }
 
-  toPeriodChange(value: any) {
-    console.log("Option Value" + value);
+  fromPeriodChange(event: any) {
+    this.startMnthIndex = this.MONTHS.indexOf(this.fromMonth);
+    this.checkAndAlertUserInfo();
+  }
+
+  toPeriodChange(event: any) {
+    this.endMnthIndex = this.MONTHS.indexOf(this.toMonth);
+    this.checkAndAlertUserInfo();
   }
 
   analyzeData() {
+    this.startMnthIndex = this.MONTHS.indexOf(this.fromMonth);
+    this.endMnthIndex = this.MONTHS.indexOf(this.toMonth);
+    this.checkAndAlertUserInfo();
+    if (this.checkAndAlertUserInfo()) {
+      this.processData();
+    }
+  }
 
+  checkAndAlertUserInfo() {
+    if (this.startMnthIndex >= this.endMnthIndex) {
+      this.userInfo = 'To period should be greater then From period';
+      return false;
+    } else {
+      this.userInfo = '';
+      return true;
+    }
+  }
+
+  isUserInfoAvailable() {
+    return !this.userInfo;
   }
 }
