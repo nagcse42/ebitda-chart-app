@@ -2,3 +2,34 @@
   background-color: cornflowerblue;
   text-align: center;
 }
+
+.selection {
+  min-width: 8rem;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #545353;
+  padding-bottom: 1rem;
+}
+
+.selections-div {
+  padding-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.label-padding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.analyze-button {
+  background-color: #2196f3;
+  color: white;
+  font-weight: bold;
+  margin-left: 2rem;
+}

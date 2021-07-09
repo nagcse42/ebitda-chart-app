@@ -1,4 +1,20 @@
-<div fxLayout="column">
+<div fxFlex="100" style="align-items: center;text-align: center;">
+    <div class="title">Select range from below for specific period </div>
+    <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around center" class="selections-div">
+        <label class="label-padding">From : </label>
+        <select name="fromPeriod" id="fromPeriod" class="selection" (change)="fromPeriodChange($event)">
+            <option *ngFor="let period of fromPeriods" [value]="period">{{period}}</option>
+        </select>
+
+        <label class="label-padding"> To: </label>
+
+        <select name="toPeriod" id="toPeriod" class="selection" (change)="toPeriodChange($event)">
+            <option *ngFor="let period of toPeriods" [value]="period">{{period}}</option>
+        </select>
+
+        <button (click)="analyzeData()" mat-raised-button class="analyze-button">Analyze</button>
+    </div>
+
     <div fxLayout="column">
         <div id="container"></div>
     </div>

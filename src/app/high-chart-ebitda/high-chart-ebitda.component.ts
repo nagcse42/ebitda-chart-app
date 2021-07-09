@@ -19,12 +19,9 @@ noData(Highcharts);
   styleUrls: ['./high-chart-ebitda.component.css']
 })
 export class HighChartEbitdaComponent implements OnInit {
-  fromDate: any = {
-    value: new Date()
-  };
-  toDate: any = {
-    value: new Date()
-  };
+  fromPeriods: any = [];
+  toPeriods: any = [];
+  years: any = [];
 
   MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -241,6 +238,9 @@ export class HighChartEbitdaComponent implements OnInit {
 
   ngOnInit(): void {
     //Highcharts.chart('container', this.chartData);
+    this.fromPeriods = this.MONTHS;
+    this.toPeriods = this.MONTHS;
+
     if (editdaData && editdaData.length > 0) {
       this.processData();
     }
@@ -314,6 +314,8 @@ export class HighChartEbitdaComponent implements OnInit {
       for (let index = 0; index < seriesData.length; index++) {
         let seriesDataItem = seriesData[index];
         let monthIndex = this.MONTHS.indexOf(data.MONTH);
+        this.years.indexOf(data.YEAR) === -1 ? this.years.push(data.YEAR) : '';
+
         switch (seriesDataItem.name) {
           case 'YTD Budget':
             if (seriesDataItem.data && !!seriesDataItem.data[monthIndex]) {
@@ -365,5 +367,17 @@ export class HighChartEbitdaComponent implements OnInit {
 
     console.log("Series Data : " + seriesData);
     this.mutliChartData.series = seriesData;
+  }
+
+  fromPeriodChange(value: any) {
+    console.log("Option Value" + value);
+  }
+
+  toPeriodChange(value: any) {
+    console.log("Option Value" + value);
+  }
+
+  analyzeData() {
+
   }
 }
